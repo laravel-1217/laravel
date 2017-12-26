@@ -24,7 +24,7 @@
 
 Route::get('/404', function () {
     return view('errors.404');
-});
+})->middleware('logging');
 
 Route::delete('/users/{id}', function($id) {
     User::delete($id);

@@ -1,6 +1,8 @@
 <h1>Привет, {{ $name or 'гость' }}!</h1>
 <h1>Мне {{ $age }} лет!</h1>
 
+Сейчас {{ formatDate() }}
+
 
 @verbatim
     <div class="container">

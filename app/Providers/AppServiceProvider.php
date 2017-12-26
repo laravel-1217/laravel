@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Implementations\Counter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,10 +18,7 @@ class AppServiceProvider extends ServiceProvider
     {
         View::share('age', '100');
 
-
         View::composer(['welcome', 'qaz.asd'], function ($view) {
-
-
             $view->with('age', 250);
         });
     }
@@ -31,6 +30,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind('Counter', function ($app) {
+            return new \App\Implementations\Counter();
+        });
+
+        $this->app->singleton('Counter', function ($app) {
+            return new \App\Implementations\Counter();
+        });
+
+        $this->app->bind(
+            'App\Interfaces\CounterInterface',
+            'App\Implementations\Counter2'
+        );
     }
 }

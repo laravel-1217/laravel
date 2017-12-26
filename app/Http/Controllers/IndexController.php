@@ -2,15 +2,29 @@
 
 namespace App\Http\Controllers;
 
+//use App\Implementations\Counter;
+use App\Interfaces\CounterInterface;
 use Illuminate\Http\Request;
 
 class IndexController extends Controller
 {
-    //
+    protected $request, $counter;
 
-    public function about(Request $request)
+    public function __construct(Request $request, CounterInterface $counter)
     {
-        $name = $request->input('name', '');
+        $this->counter = $counter;
+        //$this->counter = resolve('Counter');
+        $this->request = $request;
+    }
+
+    public function about()
+    {
+        //$counter = new Counter();
+        $this->counter->increment();
+        $this->counter->increment();
+        echo $this->counter->getValue();
+
+        $name = $this->request->input('name', '');
         //$age =
 
 
