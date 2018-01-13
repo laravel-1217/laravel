@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Implementations\Counter;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,6 +17,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Schema::defaultStringLength(191);
+
         View::share('age', '100');
 
         View::composer(['welcome', 'qaz.asd'], function ($view) {
