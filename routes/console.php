@@ -17,7 +17,8 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->describe('Display an inspiring quote');
 
+Artisan::command('hjhbjsdhbcjks', function () {
+    echo "Test message routing console";
+    //return 'dsfsdf';
+})->describe('Just a test');
 
-Artisan::command('gfdbvvbdfvbgf', function () {
-    echo "Hello from console";
-})->describe('Just a test command');

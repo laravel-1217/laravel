@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE', 'UTC'),
+    'timezone' => 'Europe/Samara',
 
     /*
     |--------------------------------------------------------------------------
@@ -174,9 +174,10 @@ return [
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
-        // App\Providers\EventServiceProvider::class,
+        App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\HelperProvider::class,
+        App\Providers\HelpersProvider::class,
+        App\Providers\CounterServiceProvider::class,
     ],
 
     /*

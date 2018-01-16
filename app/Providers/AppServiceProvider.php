@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Implementations\Counter;
+use App\Includes\Classes\MyCounter;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,11 +16,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        View::share('age', '100');
+        //View::share('userName', 'guest');
+        Schema::defaultStringLength(191);
 
-        View::composer(['welcome', 'qaz.asd'], function ($view) {
-            $view->with('age', 250);
+        $isAuth = false;
+
+        View::composer('*', function ($view) use ($isAuth) {
+            if ($isAuth !== true) {
+                $name =  'guest';
+            } else {
+                $name =  'Dima';
+            }
+
+            $view->with('userName', $name);
         });
+
+        View::share('errors', []);
     }
 
     /**
@@ -30,17 +41,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('Counter', function ($app) {
-            return new \App\Implementations\Counter();
-        });
-
-        $this->app->singleton('Counter', function ($app) {
-            return new \App\Implementations\Counter();
-        });
-
-        $this->app->bind(
-            'App\Interfaces\CounterInterface',
-            'App\Implementations\Counter2'
-        );
     }
 }
