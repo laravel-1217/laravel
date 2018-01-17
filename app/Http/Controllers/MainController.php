@@ -54,6 +54,8 @@ class MainController extends Controller
 
     public function db(Request $request)
     {
+        $sql = "SELECT * FROM users";
+        $data = DB::query($sql);
 
         $sortBy = $request->input('sortBy', 'DESC');
         $sql = "SELECT * FROM users";

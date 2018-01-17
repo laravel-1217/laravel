@@ -55,6 +55,12 @@ Route::group(['prefix' => 'test'], function () {
     Route::get('/testOrm', 'TestController@testOrm');
 });
 
+Route::get('/orm', 'MainController@orm')
+    ->name('site.main.orm');
+
+Route::get('/ormGet', 'MainController@ormGet');
+Route::post('/ormPost', 'MainController@ormPost');
+
 /*Route::get('/', function () {
     return view('welcome');
 });*/
