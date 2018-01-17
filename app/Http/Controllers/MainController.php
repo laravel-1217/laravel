@@ -1,6 +1,10 @@
 <?php namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Post;
+use App\Models\Profile;
+use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -9,7 +13,7 @@ class MainController extends Controller
 {
     public function index()
     {
-        $posts = [];
+        $posts = User::find(2)->posts;
 
         return view('layouts.primary', [
             'page' => 'pages.main',
@@ -53,101 +57,202 @@ class MainController extends Controller
         $sql = "SELECT * FROM users";
         $data = DB::query($sql);
 
-        foreach ($data as $row) {
-            echo $row[0], $row['username'];
+        $sortBy = $request->input('sortBy', 'DESC');
+        $sql = "SELECT * FROM users";
+
+        /*$data = DB::table('users')
+            ->where('name', 'LIKE', '%ася')
+            ->orWhere('email','petya@mail.ru')
+            ->get(['name','email']);
+*/
+
+        /*$user = DB::table('users')
+            ->where('name', 'Вася')
+            ->first();
+
+        //dump($data);
+        echo $user->name;*/
+
+        $sql="select * from `users` where `name` LIKE '%ася' or `email` = 'petya@mail.ru' order by `id` desc limit 1 offset 0";
+
+        $data = DB::table('users')
+            ->where('name', 'LIKE', '%ася')
+            ->orWhere('email','petya@mail.ru')
+            ->limit(1)
+            ->offset(0);
+
+        if ($sortBy == 'DESC') {
+            $data->orderBy('id', 'DESC');
+        } else {
+            $data->orderBy('id', 'ASC');
         }
 
-        $sql = "insert into `customers` (`name`, `surname`, `age`, `birthdate`, `notes`, `updated_at`, `created_at`) 
-                values ('Дмитрий', 'Юрьев', '33', '1984-09-04', 'Клевый пацан', '2018-01-11 22:16:21', '2018-01-11 22:16:21')";
-
-        DB::query($sql);
-    }
+        $data->get();
 
 
-    public function ormGet()
-    {
-        return view('form');
-    }
+/*
+foreach ($data as $row) {
+    echo $row->name . $row->email,'<br>';
+}*/
 
-    public function ormPost(Request $request)
-    {
-        Customer::create(
-            $request->all()
-        );
+        dump($data);
+
+
+        $content = '123';
+
+        return view('layouts.primary', [
+            'page' => 'pages.blank',
+            'title' => 'Написать мне',
+            'content' => $content,
+            'activeMenu' => 'feedback',
+        ]);
     }
 
     public function orm()
     {
-        /*$customerModel = new Customer();
+        /*$customer = new Customer();
 
-        $customerModel->name = 'Дмитрий';
-        $customerModel->surname = 'Юрьев';
-        $customerModel->age = 33;
-        $customerModel->birthdate= '1984-09-04';
-        $customerModel->notes= 'Клевый пацан';
+        $customer->name = 'Сидор';
+        $customer->surname = 'Сидоров';
+        $customer->patronymic = 'Сидорович';
+        $customer->age = 40;
+        $customer->birthdate = '1984-06-23';
+        $customer->notes = 'sdfsdfsdf';
 
-        $customerModel->save();*/
+        $customer->save();*/
 
-        /*Customer::create([
+        /*$customer = Customer::find(3);
+
+        $customer->age = 18;
+        $customer->birthdate = '2008-04-12';
+
+        $customer->save();*/
+
+        /*$customers1 = DB::table('customers')->where('name', '=', 'Иван')->get();
+        $customers2 = Customer::where('name', '=', 'Иван')->get();
+
+        foreach ($customers1 as $customer1) {
+            echo $customer1->name, ' - ', $customer1->age, '<br>';
+        }
+
+        foreach ($customers2 as $customer2) {
+            echo $customer2->name, ' - ', $customer2->age, '<br>';
+            $customer2->name = 'Dmitrii';
+            $customer2->surname = 'Iurev';
+            $customer2->save();
+        }
+
+        dump($customers1, $customers2);*/
+
+        //$customer = Customer::where('name', 'Dmitrii')->first();
+        //dump($customer);
+        //$customer->delete();
+
+
+
+
+        $newModel = Customer::create([
             'name' => 'Alfred',
             'surname' => 'Ivanov',
             'age' => 22,
             'birthdate' => '1990-01-30',
             'notes' => 'NTSchool student'
-        ]);*/
-
-        //
-
-        //echo $myModel->name . ' ' . $myModel->surname;
-        //dump($myModel->name);
-
-
-        //dump($myModel);
-
-        /*$allModels = Customer::all();
-
-        foreach ($allModels as $model) {
-            dump($model);
-            $model->id = $model->id * 20;
-            $model->save();
-        }*/
-
-        //$myModel = Customer::find(20);
-
-
-        /*$models2 = Customer::where('surname', '=', 'Ivanov')
-            ->get();*/
-
-        /*$models2 = DB::table('customers')
-            ->where('name', '=', 'Дмитрий')
-            ->get();*/
-
-
-
-
-        //dump($myModel, $models1);
-
-
-        $models1 = Customer::where('id', '=', '20')
-            ->first();
-
-        $models1->name = 'Alex';
-        $models1->age = 20;
-        $models1->save();
-
-        $models2 = Customer::find(60);
-
-        /*$models2->update([
-            'name' => 'John1',
-            'surname' => 'Smith'
         ]);
 
-        $models2->save();*/
+        $customers = Customer::all();
 
-        //$models2->delete();
+        dump($customers, $newModel->id);
 
-        $allModels = Customer::all();
-        dump($allModels);
+
+
+        //return 'ORM';
+    }
+
+    public function relations()
+    {
+        //$user = User::find(2);
+        //$userProfile = $user->profile;
+        //$userBirthday = User::find(1)->profile->birthdate;
+
+        /*dump($user->password, $user->profile->birthdate);
+
+        dump(Profile::find(2)
+            ->user
+            ->email
+        );*/
+
+        //Auth::user();
+
+
+        /*$postsByUser1 = User::find(2)
+            ->posts;
+
+        $postsByUser2 = Post::where('user_id', 2)
+            ->get();
+
+        $postsByUser3 = DB::table('posts')
+            ->where('user_id', 2)
+            ->get();
+
+
+        $userName = Post::where('id', 1)
+            ->first()
+            ->user
+            ->profile
+            ->name;
+
+        dump($postsByUser1, $postsByUser2, $postsByUser3, $userName);*/
+
+        //dump($tags);
+        /*$tags = Post::find(1)->tags;
+        $tagsString = '';
+
+        foreach ($tags as $tag) {
+            $tagsString .= $tag->name . ', ';
+        }
+
+        echo rtrim(trim($tagsString), ',');*/
+
+
+       /* $post = new Post([
+            'title' => 'Post4.',
+            'slug' => '444',
+            'tagline' => '444444'
+        ]);
+
+        User::find(2)
+            ->posts()
+            ->save($post);*/
+
+        /*User::find(2)
+            ->posts()
+            ->create([
+                'title' => 'Post5',
+                'slug' => '555',
+                'tagline' => '555555'
+        ]);*/
+
+
+        /*$tag1 = Tag::where('name', 'Статья')
+            ->first()
+            ->id;
+        $tag2 = Tag::where('name', 'Новость')
+            ->first()
+            ->id;
+
+        Post::find(5)
+            ->tags()
+            ->sync([
+                $tag1, $tag2
+            ]);*/
+
+
+        $posts1 = Post::has('tags')->get();
+
+        $posts2 = Post::has('tags', '>=', 2)->get();
+
+
+
 
 
 
