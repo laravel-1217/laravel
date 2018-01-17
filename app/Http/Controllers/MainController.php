@@ -1,6 +1,10 @@
 <?php namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Post;
+use App\Models\Profile;
+use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -9,7 +13,7 @@ class MainController extends Controller
 {
     public function index()
     {
-        $posts = [];
+        $posts = User::find(2)->posts;
 
         return view('layouts.primary', [
             'page' => 'pages.main',
@@ -160,5 +164,97 @@ foreach ($data as $row) {
 
 
         //return 'ORM';
+    }
+
+    public function relations()
+    {
+        //$user = User::find(2);
+        //$userProfile = $user->profile;
+        //$userBirthday = User::find(1)->profile->birthdate;
+
+        /*dump($user->password, $user->profile->birthdate);
+
+        dump(Profile::find(2)
+            ->user
+            ->email
+        );*/
+
+        //Auth::user();
+
+
+        /*$postsByUser1 = User::find(2)
+            ->posts;
+
+        $postsByUser2 = Post::where('user_id', 2)
+            ->get();
+
+        $postsByUser3 = DB::table('posts')
+            ->where('user_id', 2)
+            ->get();
+
+
+        $userName = Post::where('id', 1)
+            ->first()
+            ->user
+            ->profile
+            ->name;
+
+        dump($postsByUser1, $postsByUser2, $postsByUser3, $userName);*/
+
+        //dump($tags);
+        /*$tags = Post::find(1)->tags;
+        $tagsString = '';
+
+        foreach ($tags as $tag) {
+            $tagsString .= $tag->name . ', ';
+        }
+
+        echo rtrim(trim($tagsString), ',');*/
+
+
+       /* $post = new Post([
+            'title' => 'Post4.',
+            'slug' => '444',
+            'tagline' => '444444'
+        ]);
+
+        User::find(2)
+            ->posts()
+            ->save($post);*/
+
+        /*User::find(2)
+            ->posts()
+            ->create([
+                'title' => 'Post5',
+                'slug' => '555',
+                'tagline' => '555555'
+        ]);*/
+
+
+        /*$tag1 = Tag::where('name', 'Статья')
+            ->first()
+            ->id;
+        $tag2 = Tag::where('name', 'Новость')
+            ->first()
+            ->id;
+
+        Post::find(5)
+            ->tags()
+            ->sync([
+                $tag1, $tag2
+            ]);*/
+
+
+        $posts1 = Post::has('tags')->get();
+
+        $posts2 = Post::has('tags', '>=', 2)->get();
+
+
+
+
+
+
+
+        return 'OK';
     }
 }
