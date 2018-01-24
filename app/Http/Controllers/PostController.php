@@ -84,8 +84,6 @@ class PostController extends Controller
 
     public function create()
     {
-        $this->authorize('create', Post::class);
-
         return view('layouts.primary', [
             'page' => 'pages.create',
             'title' => 'Создание нового поста',
@@ -94,11 +92,10 @@ class PostController extends Controller
 
     public function createPost(Request $request)
     {
-        /*if (Gate::denies('create', Auth::user())) {
-            abort(403);
+        /*if (Gate::denies('create')) {
+            abort (403);
         }*/
-
-        $this->authorize('create', Post::class);
+        //$this->authorize('create');
 
         $request['active_from'] = Carbon::now();
         $request['slug'] = sha1(str_random(16) . microtime(true));

@@ -63,6 +63,14 @@ Route::post('/test', 'TestController@testPost');
 Route::get('/test/user', 'TestController@testUser');
 Route::get('/test/comment', 'TestController@testComment');
 
+Route::get('/create', 'PostController@create')
+    ->name('site.posts.create')
+    ->middleware('can:create,App\Models\Post');
+
+Route::post('/create', 'PostController@createPost')
+    ->name('site.posts.createPost')
+    ->middleware('auth');
+
 /*  
 Route::get('/', function () {
     return view('welcome');
