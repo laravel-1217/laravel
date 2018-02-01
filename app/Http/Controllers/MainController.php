@@ -12,7 +12,6 @@ class MainController extends Controller
             ->intime()
             ->orderBy('id', 'DESC')
             ->get();
-        //dump($posts);
 
         return view('layouts.primary', [
             'page' => 'pages.main',
@@ -57,9 +56,6 @@ class MainController extends Controller
             'email' => 'required|max:255|email',
             'message' => 'required|max:10240|min:10',
         ]);
-
-        Mail::to('dima@932433.ru')
-            ->send(new FeedbackMail($this->request->all()));
 
         return view('layouts.primary', [
             'page' => 'parts.blank',
