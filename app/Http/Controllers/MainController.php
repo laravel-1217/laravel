@@ -1,17 +1,24 @@
 <?php namespace App\Http\Controllers;
 
+use App\Events\FeedbackWasCreated;
+use App\Mail\FeedbackMail;
 use App\Models\Page;
 use App\Models\Post;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 
 class MainController extends Controller
 {
     public function index()
     {
-        $posts = Post::active()
-            ->intime()
-            ->orderBy('id', 'DESC')
-            ->get();
+        $posts = Cache::remember('mainPosts', env('CACHE_TIME', 0), function () {
+            return Post::with(['sections', 'comments'])
+                ->active()
+                ->intime()
+                ->orderBy('id', 'DESC')
+                ->get();
+        });
 
         return view('layouts.primary', [
             'page' => 'pages.main',
@@ -49,13 +56,29 @@ class MainController extends Controller
         ]);
     }
 
-    public function feedbackPost()
+    public function feedbackPost(Request $request)
     {
         $this->validate($this->request, [
             'name' => 'required|max:50|min:2',
             'email' => 'required|max:255|email',
             'message' => 'required|max:10240|min:10',
         ]);
+
+        /*Mail::to('yurev@ntschool.ru')
+            ->send(new FeedbackMail($request->all()));*/
+
+        /*$mailTemplate = view('mails.feedback', [
+            'data' => $request->all()
+        ])->render();
+
+        Mail::raw($mailTemplate, function($message) {
+            $message->from('laravel-1217@vlane.ru');
+            $message->to('yurev@ntschool.ru');
+            $message->setContentType('text/html');
+            $message->subject('Письмо с блога');
+        });*/
+
+        event(new FeedbackWasCreated($request->all()));
 
         return view('layouts.primary', [
             'page' => 'parts.blank',
